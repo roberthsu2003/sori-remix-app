@@ -1,87 +1,91 @@
-# Welcome to React Router!
+# SROI 投入管理系統 (SROI Remix App)
 
-A modern, production-ready template for building full-stack React applications using React Router.
+這是一個基於 React Router (前身為 Remix) 所建立的全端 React 應用程式，並整合了 Google Gemini AI 來輔助進行社會投資報酬率 (SROI) 的分析與計算。
+
+> ℹ️ **專案架構與開發指南**  
+> 想了解本系統的資料流程、前端分頁設計與 Gemini API 的串接方式，請參閱：[**專案架構指南 (ARCHITECTURE.md)**](./ARCHITECTURE.md)
 
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
 
-## Features
+## ✨ 功能特色 (Features)
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+- 🚀 伺服器端渲染 (Server-side rendering) 
+- ⚡️ 熱模組替換 (Hot Module Replacement, HMR)
+- 📦 資源打包與最佳化 (Asset bundling and optimization)
+- 🔄 資料載入與狀態變更 (Data loading and mutations)
+- 🔒 預設支援 TypeScript
+- 🎉 內建 TailwindCSS 以處理 UI 樣式
+- 🤖 後端整合 Gemini API 進行專案解析與自動報告產出
+- 📖 [React Router 官方文件](https://reactrouter.com/)
 
-## Getting Started
+## 🚀 快速開始 (Getting Started)
 
-### Installation
+### 安裝依賴 (Installation)
 
-Install the dependencies:
+安裝所需的 npm 套件：
 
 ```bash
 npm install
 ```
 
-### Development
+### 開發模式 (Development)
 
-Start the development server with HMR:
+啟動支援 HMR 的開發伺服器：
 
 ```bash
 npm run dev
 ```
 
-Your application will be available at `http://localhost:5173`.
+您的應用程式將會在 `http://localhost:5173` 運行。
 
-## Building for Production
+## 🏗️ 建立正式環境版本 (Building for Production)
 
-Create a production build:
+建立正式版 (Production) 的編譯輸出：
 
 ```bash
 npm run build
 ```
 
-## Deployment
+## 🌍 部署 (Deployment)
 
-### Docker Deployment
+### 使用 Docker 部署 (Docker Deployment)
 
-To build and run using Docker:
+使用 Docker 建立並運行映像檔：
 
 ```bash
 docker build -t my-app .
 
-# Run the container
+# 運行容器 (將內部 3000 port 映射到本機)
 docker run -p 3000:3000 my-app
 ```
 
-The containerized application can be deployed to any platform that supports Docker, including:
+容器化的應用程式可以輕易部署到任何支援 Docker 的雲端平台，包含：
 
 - AWS ECS
 - Google Cloud Run
 - Azure Container Apps
 - Digital Ocean App Platform
 - Fly.io
-- Railway
+- Railway (Render)
 
-### DIY Deployment
+### 自行伺服器部署 (DIY Deployment)
 
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
+如果您熟悉 Node 應用程式的部署流程，本應用內建的 Node 伺服器已達到正式環境標準。
 
-Make sure to deploy the output of `npm run build`
+部署時，請確保上傳 `npm run build` 產出的 `build` 資料夾及相關套件設定：
 
-```
+```text
 ├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
+├── package-lock.json
 ├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
+│   ├── client/    # 靜態資源 (前端)
+│   └── server/    # 伺服器端程式碼 (後端 API)
 ```
 
-## Styling
+## 🎨 樣式與排版 (Styling)
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+此範本已經預先設定好 [Tailwind CSS](https://tailwindcss.com/)，以確保在開發介面時能有最有效率的體驗。
 
 ---
 
-Built with ❤️ using React Router.
+使用 ❤️ 與 React Router 打造。
