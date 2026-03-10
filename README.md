@@ -2,8 +2,9 @@
 
 這是一個基於 React Router (前身為 Remix) 所建立的全端 React 應用程式，並整合了 Google Gemini AI 來輔助進行社會投資報酬率 (SROI) 的分析與計算。
 
-> ℹ️ **專案架構與開發指南**  
-> 想了解本系統的資料流程、前端分頁設計與 Gemini API 的串接方式，請參閱：[**專案架構指南 (ARCHITECTURE.md)**](./ARCHITECTURE.md)
+> ℹ️ **專案指南與教學**
+> - **系統架構與開發**：想了解資料流程、前端分頁設計與 Gemini API 串接，請參閱 [**專案架構指南 (ARCHITECTURE.md)**](./ARCHITECTURE.md)
+> - **專案上線與部署**：使用 Render 雲端將本專案發佈上線的圖文流程，請參閱 [**Render 部署教學 (RENDER_DEPLOY.md)**](./RENDER_DEPLOY.md)
 
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
 
