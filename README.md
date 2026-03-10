@@ -2,6 +2,8 @@
 
 這是一個基於 React Router (前身為 Remix) 所建立的全端 React 應用程式，並整合了 Google Gemini AI 來輔助進行社會投資報酬率 (SROI) 的分析與計算。
 
+> 📌 **專案來源說明**：本專案由 Google AI Studio 專案轉換而來。若您想從頭建立一個 React Router 專案，可參考下方「從頭建立專案」的指令。
+
 > ℹ️ **專案指南與教學**
 > - **系統架構與開發**：想了解資料流程、前端分頁設計與 Gemini API 串接，請參閱 [**專案架構指南 (ARCHITECTURE.md)**](./ARCHITECTURE.md)
 > - **專案上線與部署**：使用 Render 雲端將本專案發佈上線的圖文流程，請參閱 [**Render 部署教學 (RENDER_DEPLOY.md)**](./RENDER_DEPLOY.md)
@@ -18,6 +20,34 @@
 - 🎉 內建 TailwindCSS 以處理 UI 樣式
 - 🤖 後端整合 Gemini API 進行專案解析與自動報告產出
 - 📖 [React Router 官方文件](https://reactrouter.com/)
+
+## 🆕 從頭建立專案 (Creating a New Project)
+
+若您想從零開始建立一個 React Router 專案（例如從 Google AI Studio 轉換），可使用官方 CLI 建立：
+
+```bash
+# 使用 create-react-router 建立新專案
+npx create-react-router@latest my-react-router-app
+
+# 進入專案目錄
+cd my-react-router-app
+
+# 安裝依賴
+npm install
+
+# 啟動開發伺服器
+npm run dev
+```
+
+應用程式將在 `http://localhost:5173` 運行。
+
+若需使用特定模板，可指定模板名稱：
+
+```bash
+npx create-react-router@latest --template remix-run/react-router-templates/<template-name>
+```
+
+> 💡 本專案目前使用 React Router v7。建立完成後，可參考本專案結構與 [ARCHITECTURE.md](./ARCHITECTURE.md) 來整合 Gemini API 與 SROI 功能。
 
 ## 🚀 快速開始 (Getting Started)
 
