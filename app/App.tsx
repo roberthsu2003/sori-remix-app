@@ -66,6 +66,7 @@ import type {
 // import { analyzeSROI, parsePDFProposal, analyzeStakeholders, analyzeOutcomes, analyzeFinancialProxies, analyzeImpactFactors, analyzeImpactValue, calculateFinalSROI } from './services/geminiService';
 import ReactMarkdown from 'react-markdown';
 import { parseCSV } from './src/utils/csvParser';
+import { computeProjectInputTotalValue } from './src/utils/projectInputTotalValue';
 
 // API Helper - 擷取並拋出完整錯誤訊息
 const callGeminiAPI = async (actionType: string, data: any = {}) => {
@@ -98,15 +99,47 @@ import DebugPanel from './src/components/Debug/DebugPanel';
 
 const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ef4444', '#06b6d4'];
 
+const EMPTY_PROJECT_SETUP: ProjectSetupData = {
+  name: '',
+  period: '',
+  location: '',
+  type: '',
+  motivation: '',
+  expectedGoals: '',
+  participants: '',
+  staff: '',
+  funds: '',
+  humanResources: '',
+  activities: []
+};
+
+/** Gemini 若未回傳 setup 或結構不完整，避免將 setupData 設為 undefined */
+function normalizeSetupFromApi(raw: unknown): ProjectSetupData {
+  if (!raw || typeof raw !== 'object') {
+    return { ...EMPTY_PROJECT_SETUP };
+  }
+  const o = raw as Record<string, unknown>;
+  return {
+    ...EMPTY_PROJECT_SETUP,
+    name: String(o.name ?? ''),
+    period: String(o.period ?? ''),
+    location: String(o.location ?? ''),
+    type: String(o.type ?? ''),
+    motivation: String(o.motivation ?? ''),
+    expectedGoals: String(o.expectedGoals ?? ''),
+    participants: String(o.participants ?? ''),
+    staff: String(o.staff ?? ''),
+    funds: String(o.funds ?? ''),
+    humanResources: String(o.humanResources ?? ''),
+    activities: Array.isArray(o.activities) ? (o.activities as ActivityDetail[]) : []
+  };
+}
+
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'setup' | 'stakeholders' | 'outcomes' | 'financials' | 'impact' | 'values' | 'dashboard' | 'ai'>('setup');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [setupData, setSetupData] = useState<ProjectSetupData>({
-    name: '', period: '', location: '', type: '', motivation: '',
-    expectedGoals: '', participants: '', staff: '', funds: '', humanResources: '',
-    activities: []
-  });
+  const [setupData, setSetupData] = useState<ProjectSetupData>({ ...EMPTY_PROJECT_SETUP });
 
   const [userInputs, setUserInputs] = useState<ProjectInput[]>([]);
   const [userOutputs, setUserOutputs] = useState<ProjectOutput[]>([]);
@@ -129,15 +162,16 @@ const App: React.FC = () => {
   const [lastParseError, setLastParseError] = useState<string | null>(null);
   const [selectedFileInfo, setSelectedFileInfo] = useState<string | null>(null);
 
-  const isSetupComplete = !!(setupData.name || setupData.activities.length > 0 || userInputs.length > 0 || userOutputs.length > 0);
+  const isSetupComplete = !!(
+    (setupData?.name && String(setupData.name).trim()) ||
+    (setupData?.activities?.length ?? 0) > 0 ||
+    userInputs.length > 0 ||
+    userOutputs.length > 0
+  );
 
   const handleReset = () => {
     setActiveTab('setup');
-    setSetupData({
-      name: '', period: '', location: '', type: '', motivation: '',
-      expectedGoals: '', participants: '', staff: '', funds: '', humanResources: '',
-      activities: []
-    });
+    setSetupData({ ...EMPTY_PROJECT_SETUP });
     setUserInputs([]);
     setUserOutputs([]);
     setStakeholders([]);
@@ -322,8 +356,7 @@ const App: React.FC = () => {
     setUserInputs(prev => prev.map(item => {
       if (item.id === id) {
         const newItem = { ...item, ...updates };
-        // Recalculate totalValue
-        newItem.totalValue = (newItem.unitCost || 0) * (newItem.quantity || 1) * (newItem.hours || 1) * (newItem.days || 1);
+        newItem.totalValue = computeProjectInputTotalValue(newItem);
         return newItem;
       }
       return item;
@@ -414,20 +447,31 @@ const App: React.FC = () => {
         const data = await callGeminiAPI("parsePDFProposal", { base64Data: base64String, mimeType: file.type });
 
         if (data) {
-          setSetupData(data.setup);
+          const mergedSetup = normalizeSetupFromApi(data.setup);
+          setSetupData(mergedSetup);
 
           // 填充 Inputs
-          const parsedInputs: ProjectInput[] = (data.inputs || []).map((inp: any, idx: number) => ({
-            id: `pdf-in-${Date.now()}-${idx}`,
-            category: inp.category,
-            item: inp.item,
-            unitCost: Number(inp.unitCost) || 0,
-            quantity: Number(inp.quantity) || 1,
-            hours: Number(inp.hours) || 0,
-            days: Number(inp.days) || 0,
-            description: inp.description,
-            totalValue: (Number(inp.unitCost) || 0) * (Number(inp.quantity) || 1) * (Number(inp.hours) || 1) * (Number(inp.days) || 1)
-          }));
+          const parsedInputs: ProjectInput[] = (data.inputs || []).map((inp: any, idx: number) => {
+            const category = (inp.category as Category) || Category.Human;
+            const unitCost = Number(inp.unitCost) || 0;
+            const quantity = Number(inp.quantity) || 1;
+            const hours = Number(inp.hours) || 0;
+            const days = Number(inp.days) || 0;
+            const row = {
+              category,
+              item: inp.item,
+              unitCost,
+              quantity,
+              hours,
+              days,
+              description: inp.description ?? ''
+            };
+            return {
+              id: `pdf-in-${Date.now()}-${idx}`,
+              ...row,
+              totalValue: computeProjectInputTotalValue(row)
+            };
+          });
           setUserInputs(parsedInputs);
 
           // 填充 Outputs
@@ -448,7 +492,7 @@ const App: React.FC = () => {
           setLastParseError(null);
           window.scrollTo({ top: 800, behavior: 'smooth' });
 
-          runAllAnalysis(data.setup, parsedInputs, parsedOutputs);
+          runAllAnalysis(mergedSetup, parsedInputs, parsedOutputs);
         } else {
           setLastParseError("API 回傳空資料");
           setErrorMsg("解析失敗：API 未回傳有效資料。請檢查 Debug 面板。");
@@ -505,7 +549,7 @@ const App: React.FC = () => {
   };
 
   const triggerStakeholderAnalysis = async () => {
-    if (!setupData.name && setupData.activities.length === 0) {
+    if (!setupData?.name && (setupData?.activities?.length ?? 0) === 0) {
       setErrorMsg("請先解析 PDF 計畫書以獲取專案數據。");
       return;
     }
