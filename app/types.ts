@@ -3,6 +3,7 @@ export enum Category {
   Human = "人（無薪資者／志工）",
   Space = "場地投入",
   Material = "物力投入",
+  Other = "其他",
 }
 
 export enum OutputCategory {
@@ -15,6 +16,7 @@ export enum OutputSubCategory {
   Activity = "事(活動/服務)",
   Product = "物(實體產品)",
   Social = "社會效益",
+  Other = "其他",
 }
 
 export interface ActivityExpectedItem {
@@ -63,8 +65,6 @@ export interface ProjectOutput {
   item: string;
   unitCost: number;
   quantity: number;
-  param1: number; // 時數/參數1
-  param2: number; // 天數/頻率/參數2
   totalValue: number;
   description: string;
 }

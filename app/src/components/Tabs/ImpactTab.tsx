@@ -22,7 +22,10 @@ const ImpactTab: React.FC<ImpactTabProps> = ({
           <div className="flex items-center space-x-6">
             <Target className="w-12 h-12" />
             <div>
-              <h2 className="text-4xl font-black">AI 影響力因子評估 (折減因子)</h2>
+              <h2 className="text-4xl font-black">
+                AI 影響力因子評估 (折減因子)
+                <span className="ml-2 text-xs font-medium text-white/65 align-middle">持續開發中</span>
+              </h2>
               <p className="text-xl font-bold opacity-80 mt-1">評估無謂、移轉、歸因與衰減因子，確保 SROI 數值的精確性與公信力</p>
             </div>
           </div>

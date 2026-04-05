@@ -304,7 +304,7 @@ const App: React.FC = () => {
       }
       setIsAnalyzingImpactValues(false);
 
-      // 6. SROI Calculation
+      // 6. SROI Calculation（總投入：計畫總經費或投入加總；總影響：Tab 5 影響價值加總；比值含 1.2% 折現）
       setIsCalculatingSROI(true);
       const totalIn = parsedInputs.reduce((acc, curr) => acc + curr.totalValue, 0);
       const rawFunds = parsedSetupData.funds || totalIn;
@@ -398,7 +398,7 @@ const App: React.FC = () => {
       if (item.id === id) {
         const newItem = { ...item, ...updates };
         // Recalculate totalValue
-        newItem.totalValue = (newItem.unitCost || 0) * (newItem.quantity || 1) * (newItem.param1 || 1) * (newItem.param2 || 1);
+        newItem.totalValue = (newItem.unitCost || 0) * (newItem.quantity || 1);
         return newItem;
       }
       return item;
@@ -417,8 +417,6 @@ const App: React.FC = () => {
       item: '新產出項',
       unitCost: 0,
       quantity: 1,
-      param1: 1,
-      param2: 1,
       description: '',
       totalValue: 0
     };
@@ -493,10 +491,8 @@ const App: React.FC = () => {
             item: out.item,
             unitCost: Number(out.unitCost) || 0,
             quantity: Number(out.quantity) || 1,
-            param1: Number(out.param1) || 0,
-            param2: Number(out.param2) || 0,
             description: out.description,
-            totalValue: (Number(out.unitCost) || 0) * (Number(out.quantity) || 1) * (Number(out.param1) || 1) * (Number(out.param2) || 1)
+            totalValue: (Number(out.unitCost) || 0) * (Number(out.quantity) || 1)
           }));
           setUserOutputs(parsedOutputs);
 
@@ -718,7 +714,7 @@ const App: React.FC = () => {
 
   const triggerSROICalculation = async () => {
     if (impactValues.length === 0) {
-      setErrorMsg("請先完成影響價值計算。");
+      setErrorMsg("請先完成 Tab 5 影響價值計算。");
       return;
     }
     setErrorMsg(null);
@@ -734,8 +730,6 @@ const App: React.FC = () => {
         return sum + numericValue;
       }, 0);
 
-      // SROI = 影響現值 / 總投入成本
-      // 假設一年期專案，折現率 1.2%
       const discountRate = 0.012;
       const impactPresentValue = totalImpact / (1 + discountRate);
       const ratio = funds > 0 ? (impactPresentValue / funds).toFixed(2) : "0.00";
@@ -769,11 +763,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f4f7f9] text-gray-900 font-['Inter',_'Noto_Sans_TC'] overflow-x-hidden">
-      <Header
-        onTriggerAI={triggerAIAnalysis}
-        onReset={handleReset}
-        isSetupComplete={isSetupComplete}
-      />
+      <Header onReset={handleReset} />
 
       <main className="flex-grow max-w-[1600px] w-full mx-auto px-10 py-12 space-y-12">
         {errorMsg && (
@@ -948,7 +938,7 @@ const App: React.FC = () => {
             dashboard: {
               title: 'Tab 6: 影響力看板',
               sections: [
-                { label: 'Input (傳給 API)', data: { totalCost, totalImpactValue: totalImpact } },
+                { label: 'Input (傳給 calculateFinalSROI)', data: { totalCost, totalImpactValue: totalImpact } },
                 { label: 'Output (Gemini 回傳 + 前端計算)', data: { sroiResult } },
               ],
             },

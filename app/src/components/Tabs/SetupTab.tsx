@@ -1,5 +1,5 @@
 import React from 'react';
-import { Upload, Loader2, Sparkles, Building2, Rocket, Zap, Banknote, CheckCircle2, Users, ArrowRightLeft, DollarSign, Target, TrendingUp, ChevronRight, Plus, Trash2 } from 'lucide-react';
+import { Upload, Loader2, Sparkles, Building2, Rocket, Zap, DollarSign, Plus, Trash2 } from 'lucide-react';
 import { Category, OutputSubCategory, OutputCategory } from '../../../types';
 import type { ProjectSetupData, ProjectInput, ProjectOutput } from '../../../types';
 
@@ -279,8 +279,6 @@ const SetupTab: React.FC<SetupTabProps> = ({
                 <th className="py-6 px-4 text-sm font-black text-gray-400 uppercase">項目名稱</th>
                 <th className="py-6 px-4 text-sm font-black text-gray-400 uppercase">單位成本</th>
                 <th className="py-6 px-4 text-sm font-black text-gray-400 uppercase">數量</th>
-                <th className="py-6 px-4 text-sm font-black text-gray-400 uppercase">參數1</th>
-                <th className="py-6 px-4 text-sm font-black text-gray-400 uppercase">參數2</th>
                 <th className="py-6 px-4 text-sm font-black text-gray-400 uppercase">總計</th>
                 <th className="py-6 px-4"></th>
               </tr>
@@ -321,22 +319,6 @@ const SetupTab: React.FC<SetupTabProps> = ({
                       className="w-24 bg-white border-2 border-gray-200 rounded-xl px-4 py-2 font-bold text-lg outline-none focus:border-indigo-400"
                     />
                   </td>
-                  <td className="py-6 px-4">
-                    <input 
-                      type="number" 
-                      value={out.param1} 
-                      onChange={(e) => onUpdateOutput(out.id, { param1: Number(e.target.value) })}
-                      className="w-24 bg-white border-2 border-gray-200 rounded-xl px-4 py-2 font-bold text-lg outline-none focus:border-indigo-400"
-                    />
-                  </td>
-                  <td className="py-6 px-4">
-                    <input 
-                      type="number" 
-                      value={out.param2} 
-                      onChange={(e) => onUpdateOutput(out.id, { param2: Number(e.target.value) })}
-                      className="w-24 bg-white border-2 border-gray-200 rounded-xl px-4 py-2 font-bold text-lg outline-none focus:border-indigo-400"
-                    />
-                  </td>
                   <td className="py-6 px-4 text-2xl font-black text-gray-900">
                     ${out.totalValue.toLocaleString()}
                   </td>
@@ -353,12 +335,12 @@ const SetupTab: React.FC<SetupTabProps> = ({
         </div>
       </section>
 
-      {/* 執行內容與預計產出 */}
+      {/* 活動總覽 */}
       <section className="bg-white p-14 rounded-[4rem] shadow-xl border border-gray-100 space-y-14">
         <div className="flex items-center space-x-6">
           <div className="bg-purple-100 p-5 rounded-[2rem]"><Zap className="w-12 h-12 text-purple-600" /></div>
           <div>
-            <h3 className="text-4xl font-black tracking-tighter">執行內容與預計產出 (含定價分析)</h3>
+            <h3 className="text-4xl font-black tracking-tighter">活動總覽</h3>
             <p className="text-xl text-gray-500 font-bold mt-1">系統已自動識別文件內容，並為每項產出對應財務代理變數</p>
           </div>
         </div>
@@ -375,28 +357,14 @@ const SetupTab: React.FC<SetupTabProps> = ({
                 <label className="text-sm font-black text-gray-400">活動內容</label>
                 <div className="text-xl font-bold text-gray-700 leading-relaxed">{act.content}</div>
               </div>
-              <div className="space-y-4">
-                <label className="text-sm font-black text-gray-400 flex items-center space-x-2"><Banknote className="w-4 h-4" /><span>預計內容與定價</span></label>
-                <div className="space-y-3">
-                  {act.expectedItems.map((item, i) => (
-                    <div key={i} className="bg-white border-2 border-gray-100 px-6 py-4 rounded-2xl flex items-center justify-between shadow-sm">
-                      <div className="flex items-center space-x-3">
-                        <CheckCircle2 className="w-6 h-6 text-emerald-500" />
-                        <span className="text-2xl font-black text-gray-800">{item.label}: {item.value}</span>
-                      </div>
-                      <div className="bg-indigo-50 text-indigo-700 px-4 py-2 rounded-xl font-black text-lg">
-                        ${item.price?.toLocaleString()} / 單位
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
           ))}
           {setupData.activities.length === 0 && <div className="md:col-span-2 py-32 text-center text-gray-400 text-2xl font-black">等待解析計畫書...</div>}
         </div>
       </section>
 
+      {/* 暫時隱藏 Tab 0 底部快捷按鈕（還原時取消註解整段） */}
+      {/*
       <div className="flex justify-center pt-10 space-x-6 flex-wrap gap-y-6">
         <button onClick={onTriggerStakeholders} className="flex items-center space-x-6 bg-indigo-600 text-white px-16 py-8 rounded-[3rem] text-3xl font-black hover:bg-indigo-700 transition-all shadow-2xl">
           <Users className="w-10 h-10" />
@@ -427,6 +395,7 @@ const SetupTab: React.FC<SetupTabProps> = ({
           <ChevronRight className="w-12 h-12" />
         </button>
       </div>
+      */}
     </div>
   );
 };

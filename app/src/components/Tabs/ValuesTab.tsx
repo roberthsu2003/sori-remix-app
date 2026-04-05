@@ -22,7 +22,10 @@ const ValuesTab: React.FC<ValuesTabProps> = ({
           <div className="flex items-center space-x-6">
             <Banknote className="w-12 h-12" />
             <div>
-              <h2 className="text-4xl font-black">AI 影響價值計算 (未折現)</h2>
+              <h2 className="text-4xl font-black">
+                AI 影響價值計算 (未折現)
+                <span className="ml-2 text-xs font-medium text-white/65 align-middle">持續開發中</span>
+              </h2>
               <p className="text-xl font-bold opacity-80 mt-1">統整定價與折減因子，精確計算每項成果創造的淨社會價值</p>
             </div>
           </div>

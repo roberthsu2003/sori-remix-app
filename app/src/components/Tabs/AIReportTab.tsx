@@ -164,7 +164,7 @@ const AIReportTab: React.FC<AIReportTabProps> = ({ isAnalyzing, analysis }) => {
       <div className="flex items-center justify-between mb-16 border-b-4 border-gray-50 pb-16">
         <div className="flex items-center space-x-10">
           <Sparkles className="w-14 h-14 text-purple-600" />
-          <h2 className="text-5xl font-black">SROI 永續顧問深度解析</h2>
+          <h2 className="text-5xl font-black">SROI 社會價值量化分析系統</h2>
         </div>
         {hasReport && (
           <button

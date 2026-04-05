@@ -6,6 +6,7 @@ import { Category } from '../../types';
  * - 人（無薪資者／志工）：總價值 = 時薪 × 總工時（hours 為專案總志工時數，不與 quantity 連乘）
  * - 場地投入：單位成本 × 數量 × 天數
  * - 物力投入：單位成本 × 數量
+ * - 其他：單位成本 × 數量（與物力相同，供無法歸入前三類之項目使用）
  */
 export function computeProjectInputTotalValue(inp: {
   category: string;
@@ -23,6 +24,7 @@ export function computeProjectInputTotalValue(inp: {
     inp.category === Category.Human || inp.category === '人（無薪資者／志工）';
   const isSpace = inp.category === Category.Space || inp.category === '場地投入';
   const isMaterial = inp.category === Category.Material || inp.category === '物力投入';
+  const isOther = inp.category === Category.Other || inp.category === '其他';
 
   if (isHuman) {
     if (h > 0) {
@@ -41,7 +43,7 @@ export function computeProjectInputTotalValue(inp: {
     return uc * (q || 1) * (d || 1);
   }
 
-  if (isMaterial) {
+  if (isMaterial || isOther) {
     return uc * (q || 1);
   }
 

@@ -80,7 +80,7 @@ export const parsePDFProposal = async (base64Data: string, mimeType: string) => 
     請仔細閱讀上傳的 PDF 計畫書，並嚴格按照以下結構提取數據。
     
     # 提取規則 (重要)
-    1. **投入項對應**：將所有細項歸類為「人（無薪資者／志工）」、「場地投入」或「物力投入」。
+    1. **投入項對應**：將所有細項歸類為「人（無薪資者／志工）」、「場地投入」、「物力投入」或「其他」（僅當無法合理歸入前三類時）。
     2. **薪資計算**：志工時薪請統一對標 NT$ 196，搬運類對標 NT$ 300。
     3. **標示不明確項**：若某項細項歸類不明確，請在 description 開頭加上 [待確認]。
     4. **志工／人力欄位語意（極重要，避免重複計算）**：
@@ -94,6 +94,10 @@ export const parsePDFProposal = async (base64Data: string, mimeType: string) => 
        - 「事(活動/服務)」「物(實體產品)」僅列**本計畫新產生之服務人次、實體產出或可量化成果**。
        - 若 PDF 僅提及「沿用既有教材、徵件得來之教材作為工具」而**非本計畫新產出之標的**，請**不要**列為直接產出；可省略或於 description 註明「教材為投入／工具，非新產出」。
        - 社會效益、意識提升等若為 proxy 推估，於 description 註明「proxy」或「推估」。
+    9. **產出項 unitCost 與 quantity（後端以 單位成本×數量 計總計，極重要）**：
+       - **quantity**：該項成果之可量化數量（例如人次、份數、場次）；若 PDF 只寫總人次，請將該數字放進 quantity。
+       - **unitCost**：**每一單位成果**對應之金額（新台幣）。優先順序：(a) PDF **明載**之單價、每人次金額、或表格「單價／定價」欄；(b) 同一計畫書內 **activities.expectedItems** 若該項目有 **price** 且語意為單價，請對應至同一語意之 outputs 列；(c) 若 PDF 完全無金額，僅有質化敘述，**unitCost 填 0**，並在 description 註明「PDF 未載明單價」。
+       - 若需依「社會價值代理變數」或合理市場假設填寫單價（非 PDF 原文數字），僅可於 description 一併標註「分析師建議推估」，並簡述依據；**不得**無理由杜撰與文件無關的數字。
 
     請回傳純 JSON 格式：
     {
@@ -119,10 +123,10 @@ export const parsePDFProposal = async (base64Data: string, mimeType: string) => 
         ]
       },
       "inputs": [
-        { "category": "人（無薪資者／志工）|場地投入|物力投入", "item": "名稱", "unitCost": 數字, "quantity": 數字, "hours": 數字, "days": 數字, "description": "說明" }
+        { "category": "人（無薪資者／志工）|場地投入|物力投入|其他", "item": "名稱", "unitCost": 數字, "quantity": 數字, "hours": 數字, "days": 數字, "description": "說明" }
       ],
       "outputs": [
-        { "subCategory": "人(有薪資者)|事(活動/服務)|物(實體產品)|社會效益", "item": "名稱", "unitCost": 數字, "quantity": 數字, "param1": 數字, "param2": 數字, "description": "說明" }
+        { "subCategory": "人(有薪資者)|事(活動/服務)|物(實體產品)|社會效益|其他", "item": "名稱", "unitCost": 數字, "quantity": 數字, "description": "說明" }
       ]
     }
   `;

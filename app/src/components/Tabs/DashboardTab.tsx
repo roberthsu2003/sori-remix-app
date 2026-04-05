@@ -80,7 +80,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({
         </div>
       </section>
 
-      {/* 影響力價值分布圖表 */}
+      {/* 影響力價值分布（依 Tab 5 影響價值列） */}
       <section className="bg-white rounded-[4rem] border border-gray-200 shadow-2xl p-12">
         <div className="flex items-center justify-between mb-12">
           <div className="flex items-center space-x-4">
@@ -91,33 +91,37 @@ const DashboardTab: React.FC<DashboardTabProps> = ({
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           <div className="h-[500px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={impactValues.map((v, i) => {
-                    const numericValue = parseFloat(v.value.replace(/[^\d.]/g, '')) || 0;
-                    return {
-                      name: v.stakeholder,
-                      value: numericValue
-                    };
-                  })}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={120}
-                  outerRadius={180}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {impactValues.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  contentStyle={{ borderRadius: '24px', border: 'none', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', fontWeight: 'bold' }}
-                  formatter={(value) => `NT$ ${(value ?? 0).toLocaleString()}`}
-                />
-              </PieChart>
-            </ResponsiveContainer>
+            {impactValues.length === 0 ? (
+              <div className="h-full flex items-center justify-center text-xl font-bold text-gray-300">請先完成 Tab 5 影響價值計算</div>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={impactValues.map((v, i) => {
+                      const numericValue = parseFloat(v.value.replace(/[^\d.]/g, '')) || 0;
+                      return {
+                        name: v.stakeholder,
+                        value: numericValue
+                      };
+                    })}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={120}
+                    outerRadius={180}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {impactValues.map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{ borderRadius: '24px', border: 'none', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', fontWeight: 'bold' }}
+                    formatter={(value) => `NT$ ${(value ?? 0).toLocaleString()}`}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            )}
           </div>
           
           <div className="flex flex-col justify-center space-y-6">

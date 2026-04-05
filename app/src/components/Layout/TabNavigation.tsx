@@ -39,7 +39,12 @@ const TabNavigation: React.FC<TabNavigationProps> = ({ activeTab, setActiveTab, 
             }`}
           >
             {isLocked ? <Lock className="w-8 h-8" /> : tab.icon}
-            <span>{tab.label}</span>
+            <span className="flex items-baseline gap-2 flex-wrap">
+              <span>{tab.label}</span>
+              {(tab.id === 'impact' || tab.id === 'values') && (
+                <span className="text-[11px] font-normal tracking-wide text-gray-400/90">持續開發中</span>
+              )}
+            </span>
           </button>
         );
       })}
